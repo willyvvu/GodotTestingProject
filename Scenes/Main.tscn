@@ -1,0 +1,216 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://Character/Layer 1.png" type="Texture" id=1]
+[ext_resource path="res://Character/Jump 3.png" type="Texture" id=2]
+[ext_resource path="res://Character/Layer 2.png" type="Texture" id=3]
+[ext_resource path="res://Character/Layer 3.png" type="Texture" id=4]
+[ext_resource path="res://Environment/gamespriteleveltest/bg1.PNG" type="Texture" id=5]
+[ext_resource path="res://Character/Idle 1.png" type="Texture" id=6]
+[ext_resource path="res://Character/Idle 2.png" type="Texture" id=7]
+[ext_resource path="res://Environment/gamespriteleveltest/sky.PNG" type="Texture" id=8]
+[ext_resource path="res://Environment/gamespriteleveltest/bg2.PNG" type="Texture" id=9]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/Street Segment.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Character/Jump 1.png" type="Texture" id=12]
+[ext_resource path="res://Character/Jump 2.png" type="Texture" id=13]
+[ext_resource path="res://Music/WillyGame1_Mixdown.wav" type="AudioStream" id=14]
+[ext_resource path="res://Scripts/PauseMenu.gd" type="Script" id=15]
+[ext_resource path="res://Scripts/FollowNode.gd" type="Script" id=16]
+[ext_resource path="res://Scripts/ShadowRay.gd" type="Script" id=17]
+[ext_resource path="res://Character/Shadow.png" type="Texture" id=18]
+[ext_resource path="res://Scripts/CameraHolder.gd" type="Script" id=19]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 24, 128 )
+
+[sub_resource type="ParticlesMaterial" id=2]
+emission_shape = 2
+emission_box_extents = Vector3( 400, 1, 1 )
+flag_disable_z = true
+direction = Vector3( 0, 1, 0 )
+spread = 7.57
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 61.95
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color = Color( 1, 1, 1, 0.694118 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 1.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "Run",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 13 ), ExtResource( 2 ) ],
+"loop": false,
+"name": "Jump",
+"speed": 10.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=4]
+height = 16.0
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0, 0 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="sky" type="Sprite" parent="ParallaxBackground/ParallaxLayer3"]
+texture = ExtResource( 8 )
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.1, 0.1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="bg2" type="Sprite" parent="ParallaxBackground/ParallaxLayer2"]
+position = Vector2( 0, 8 )
+texture = ExtResource( 9 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 800, 200 )
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.2, 0.2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="bg1" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2( 0, 8 )
+texture = ExtResource( 5 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 800, 200 )
+
+[node name="Level Objects" type="Node2D" parent="."]
+
+[node name="Street Segment2" parent="Level Objects" instance=ExtResource( 11 )]
+position = Vector2( 304, -48 )
+
+[node name="Street Segment" parent="Level Objects" instance=ExtResource( 11 )]
+position = Vector2( 0, -16 )
+
+[node name="Street Segment3" parent="Level Objects" instance=ExtResource( 11 )]
+position = Vector2( -304, 8 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Level Objects"]
+position = Vector2( -496, 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level Objects/StaticBody2D"]
+position = Vector2( 16, 0 )
+shape = SubResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Level Objects/StaticBody2D"]
+position = Vector2( 976, -56 )
+shape = SubResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Node2D" type="Node2D" parent="Level Objects"]
+position = Vector2( 0, 48 )
+script = ExtResource( 16 )
+toFollowName = "Player"
+
+[node name="Particles2D" type="Particles2D" parent="Level Objects/Node2D"]
+position = Vector2( 0, -184 )
+amount = 50
+lifetime = 5.0
+preprocess = 10.0
+local_coords = false
+process_material = SubResource( 2 )
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 0, 48 )
+collision_layer = 2
+script = ExtResource( 10 )
+playerAccelX = 80.0
+playerMaxMoveSpeed = 200.0
+jumpVelocity = 200.0
+gravity = 20.0
+friction = 30.0
+
+[node name="CameraHoder" type="Node2D" parent="Player"]
+position = Vector2( 0, -56 )
+script = ExtResource( 19 )
+offset = Vector2( 0.8, 0.4 )
+smoothfactor = 0.03
+
+[node name="Camera2D" type="Camera2D" parent="Player/CameraHoder"]
+position = Vector2( 0, 3.8147e-06 )
+current = true
+
+[node name="RayCast2D" type="RayCast2D" parent="Player"]
+position = Vector2( 0, -16 )
+enabled = true
+cast_to = Vector2( 0, 100 )
+script = ExtResource( 17 )
+
+[node name="Node2D" type="Node2D" parent="Player/RayCast2D"]
+position = Vector2( 0, 16 )
+
+[node name="Shadow" type="Sprite" parent="Player/RayCast2D/Node2D"]
+self_modulate = Color( 1, 1, 1, 0.282353 )
+show_behind_parent = true
+light_mask = -2147483647
+position = Vector2( 0, -18 )
+texture = ExtResource( 18 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+position = Vector2( 0, -18 )
+frames = SubResource( 3 )
+animation = "Idle"
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2( 0, -18 )
+shape = SubResource( 4 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 14 )
+volume_db = -6.0
+autoplay = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+pause_mode = 2
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control"]
+margin_right = 300.0
+margin_bottom = 200.0
+color = Color( 0, 0, 0, 0.505882 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="CanvasLayer/Control"]
+margin_left = 128.0
+margin_top = 88.0
+margin_right = 168.0
+margin_bottom = 102.0
+text = "Paused"
+__meta__ = {
+"_edit_use_anchors_": false
+}
